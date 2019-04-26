@@ -15,6 +15,6 @@ lazy val root =
       libraryDependencies ++= rootDependencies ++ rootTestDependencies.map(_ % Test)
     )
 
-lazy val rootDependencies = Seq(guice, jodaTime)
+lazy val rootDependencies = Seq(guice, jodaTime, scalazCore, playSlick, playSlickEvolutions)
 
 lazy val rootTestDependencies = Seq(scalaTestPlusPlay, pegdown)
