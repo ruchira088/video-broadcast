@@ -1,0 +1,14 @@
+FROM openjdk:8-jdk
+
+RUN apt-get update && \
+    apt-get install apt-transport-https bc ca-certificates software-properties-common -y
+
+WORKDIR /opt/video-broadcast
+
+COPY ./video-broadcast .
+
+EXPOSE 9000
+
+ENTRYPOINT ["bash"]
+
+CMD ["/opt/video-broadcast/bin/video-broadcast"]

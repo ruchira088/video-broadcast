@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  video-broadcast:
+    build: .
+    tty: true
+    ports:
+      - 9000:9000
+      - 5005:5005
+    volumes:
+      - "~/.sbt:/root/.sbt"
+      - "~/.ivy2:/root/.ivy2"
+      - ".:/opt/video-broadcast"
+      - "/opt/video-broadcast/target"
+      - "/opt/video-broadcast/project/target"
+      - "/root/.sbt/1.0/plugins"
