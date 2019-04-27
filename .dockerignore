@@ -1,3 +1,6 @@
+logs
+target
+/.sqlite/*
 /.idea
 /.idea_modules
 /.classpath
