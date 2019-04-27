@@ -16,7 +16,7 @@ class BroadcasterServiceImpl @Inject()(broadcasterDao: BroadcasterDao)(implicit 
   override def signIn(broadcasterSignInRequest: BroadcasterSignInRequest)(implicit executionContext: ExecutionContext): Future[Broadcaster] =
     for {
       _ <- broadcasterDao.getByUsername(broadcasterSignInRequest.username) ifNotEmpty ExistingUsernameException(broadcasterSignInRequest.username)
-      broadcaster <- broadcasterDao.insert(Broadcaster(broadcasterSignInRequest.username, broadcasterSignInRequest.description, systemUtilities.currentTime(), None))
+      broadcaster <- broadcasterDao.insert(Broadcaster(broadcasterSignInRequest.username, broadcasterSignInRequest.description, systemUtilities.dateTime(), None))
     }
     yield broadcaster
 

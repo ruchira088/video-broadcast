@@ -73,14 +73,14 @@ class SlickBroadcasterDao @Inject()(protected val dbConfigProvider: DatabaseConf
         .take(PAGE_SIZE)
         .result
     }
-      .map(_.map(toBroadcaster).toList)
+      .map { _.map(toBroadcaster).toList }
 
   override def deleteByUsername(
     username: String
   )(implicit executionContext: ExecutionContext): OptionT[Future, Broadcaster] =
     getByUsername(username)
       .flatMapF { broadcaster =>
-        val signedOutAt = systemUtilities.currentTime()
+        val signedOutAt = systemUtilities.dateTime()
 
         db.run {
           slickBroadcasters
@@ -93,6 +93,15 @@ class SlickBroadcasterDao @Inject()(protected val dbConfigProvider: DatabaseConf
           }
           .map(_ => broadcaster.copy(signedOutAt = Some(signedOutAt)))
       }
+
+  override def getAllIncludingDeleted(page: Int)(implicit executionContext: ExecutionContext): Future[List[Broadcaster]] =
+    db.run {
+      slickBroadcasters
+        .drop(page * PAGE_SIZE)
+        .take(PAGE_SIZE)
+        .result
+    }
+      .map { _.map(toBroadcaster).toList }
 }
 
 object SlickBroadcasterDao {

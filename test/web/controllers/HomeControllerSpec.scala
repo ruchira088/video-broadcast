@@ -8,7 +8,7 @@ import org.scalatestplus.play._
 import play.api.test.Helpers._
 import play.api.test._
 import utils.Matchers._
-import utils.TestUtils.waitForResult
+import utils.TestUtils.result
 import web.responses.models.HealthCheck
 
 class HomeControllerSpec extends PlaySpec {
@@ -19,7 +19,7 @@ class HomeControllerSpec extends PlaySpec {
       val timestamp = DateTime.now()
 
       implicit val systemUtilities: SystemUtilities = new SystemUtilities {
-        override def currentTime(): DateTime = timestamp
+        override def dateTime(): DateTime = timestamp
       }
 
       val app = application(classOf[SystemUtilities] -> systemUtilities)
@@ -31,7 +31,7 @@ class HomeControllerSpec extends PlaySpec {
       contentType(home) must beJson
       contentAsJson(home) must equalJsonOf(HealthCheck())
 
-      waitForResult(app.stop())
+      result(app.stop())
     }
   }
 }

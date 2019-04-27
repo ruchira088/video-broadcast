@@ -12,9 +12,10 @@ lazy val root =
       buildInfoKeys := BuildInfoKey.ofN(name, organization, version, scalaVersion, sbtVersion),
       buildInfoPackage := "com.eed3si9n.ruchij",
       testOptions in Test += Tests.Argument(TestFrameworks.ScalaTest, "-h", "target/test-results/unit-tests"),
+      javaOptions in Test += "-Dconfig.file=conf/application.h2.conf",
       libraryDependencies ++= rootDependencies ++ rootTestDependencies.map(_ % Test)
     )
 
 lazy val rootDependencies = Seq(guice, jodaTime, scalazCore, playSlick, playSlickEvolutions, postgresql, sqlite)
 
-lazy val rootTestDependencies = Seq(h2, scalaTestPlusPlay, pegdown)
+lazy val rootTestDependencies = Seq(h2, faker, scalaTestPlusPlay, pegdown)

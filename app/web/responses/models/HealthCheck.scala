@@ -31,7 +31,7 @@ object HealthCheck {
       Properties.javaVersion,
       BuildInfo.sbtVersion,
       BuildInfo.scalaVersion,
-      systemUtilities.currentTime(),
+      systemUtilities.dateTime(),
       Properties.osName
     )
 }

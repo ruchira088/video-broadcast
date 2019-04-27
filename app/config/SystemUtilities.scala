@@ -5,7 +5,7 @@ import java.util.UUID
 import org.joda.time.DateTime
 
 trait SystemUtilities {
-  def currentTime(): DateTime = DateTime.now()
+  def dateTime(): DateTime = DateTime.now()
 
   def randomUuid(): UUID = UUID.randomUUID()
 }

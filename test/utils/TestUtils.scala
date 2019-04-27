@@ -5,6 +5,6 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 
 object TestUtils {
-  def waitForResult[A](future: Future[A]): A =
+  def result[A](future: Future[A]): A =
     Await.result(future, Duration(10, TimeUnit.SECONDS))
 }
