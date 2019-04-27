@@ -3,7 +3,7 @@ package dao.broadcaster
 import java.sql.Timestamp
 
 import config.SystemUtilities
-import exceptions.{ExistingUsernameException, FatalDatabaseException}
+import exceptions.FatalDatabaseException
 import javax.inject.{Inject, Singleton}
 import org.joda.time.DateTime
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
@@ -19,7 +19,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.language.{implicitConversions, postfixOps}
 
 @Singleton
-class SlickBroadcasterDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)
+class SlickBroadcasterDao @Inject()(protected val dbConfigProvider: DatabaseConfigProvider)(implicit systemUtilities: SystemUtilities)
     extends BroadcasterDao
     with HasDatabaseConfigProvider[JdbcProfile] {
 
@@ -44,8 +44,7 @@ class SlickBroadcasterDao @Inject()(protected val dbConfigProvider: DatabaseConf
 
   override def insert(broadcaster: Broadcaster)(implicit executionContext: ExecutionContext): Future[Broadcaster] =
     for {
-      _ <- getByUsername(broadcaster.username) ifNotEmpty ExistingUsernameException(broadcaster.username)
-      _ <- db.run(slickBroadcasters += SlickBroadcasterDao.toSlickBroadcaster(broadcaster))
+      _ <- db.run(slickBroadcasters += toSlickBroadcaster(broadcaster))
       insertedBroadcaster <- getByUsername(broadcaster.username) ifEmpty FatalDatabaseException
     } yield insertedBroadcaster
 
@@ -62,13 +61,23 @@ class SlickBroadcasterDao @Inject()(protected val dbConfigProvider: DatabaseConf
             .result
         }
         .map {
-          _.headOption.map(SlickBroadcasterDao.toBroadcaster)
+          _.headOption.map(toBroadcaster)
         }
     }
 
+  override def getAll(page: Int)(implicit executionContext: ExecutionContext): Future[List[Broadcaster]] =
+    db.run {
+      slickBroadcasters
+        .filter(_.signedOutAt === NON_SIGNED_OUT_AT_PLACEHOLDER)
+        .drop(page * PAGE_SIZE)
+        .take(PAGE_SIZE)
+        .result
+    }
+      .map(_.map(toBroadcaster).toList)
+
   override def deleteByUsername(
     username: String
-  )(implicit systemUtilities: SystemUtilities, executionContext: ExecutionContext): OptionT[Future, Broadcaster] =
+  )(implicit executionContext: ExecutionContext): OptionT[Future, Broadcaster] =
     getByUsername(username)
       .flatMapF { broadcaster =>
         val signedOutAt = systemUtilities.currentTime()
@@ -89,6 +98,8 @@ class SlickBroadcasterDao @Inject()(protected val dbConfigProvider: DatabaseConf
 object SlickBroadcasterDao {
   val TABLE_NAME = "broadcasters"
   val NON_SIGNED_OUT_AT_PLACEHOLDER: DateTime = new DateTime(0)
+
+  val PAGE_SIZE = 20
 
   case class SlickBroadcaster(
     username: String,

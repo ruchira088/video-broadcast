@@ -1,6 +1,5 @@
 package dao.broadcaster
 
-import config.SystemUtilities
 import scalaz.OptionT
 import services.broadcast.models.Broadcaster
 
@@ -11,5 +10,7 @@ trait BroadcasterDao {
 
   def getByUsername(username: String)(implicit executionContext: ExecutionContext): OptionT[Future, Broadcaster]
 
-  def deleteByUsername(username: String)(implicit systemUtilities: SystemUtilities, executionContext: ExecutionContext): OptionT[Future, Broadcaster]
+  def getAll(page: Int)(implicit executionContext: ExecutionContext): Future[List[Broadcaster]]
+
+  def deleteByUsername(username: String)(implicit executionContext: ExecutionContext): OptionT[Future, Broadcaster]
 }
