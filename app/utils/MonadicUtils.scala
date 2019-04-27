@@ -8,7 +8,7 @@ object MonadicUtils {
   implicit class OptionTWrapper[F[_], A](optionT: OptionT[F, A]) {
     def ifNotEmpty(throwable: => Throwable)(implicit monadError: MonadError[F, Throwable]): F[Unit] =
       monadError.bind(optionT.run) {
-        _.fold[F[Unit]](monadError.raiseError(throwable))(_ => monadError.pure((): Unit))
+        _.fold[F[Unit]](monadError.pure((): Unit))(_ => monadError.raiseError(throwable))
       }
 
     def ifEmpty(throwable: => Throwable)(implicit monadError: MonadError[F, Throwable]): F[A] =

@@ -14,3 +14,17 @@ services:
       - "/opt/video-broadcast/target"
       - "/opt/video-broadcast/project/target"
       - "/root/.sbt/1.0/plugins"
+    environment:
+      POSTGRESQL_URL: "jdbc:postgresql://postgres-database:5432/video-broadcast"
+      POSTGRESQL_USER: "user"
+      POSTGRESQL_PASSWORD: "password"
+
+  postgres-database:
+    image: postgres
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: "video-broadcast"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "password"
+

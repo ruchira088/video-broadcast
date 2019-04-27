@@ -19,3 +19,7 @@ lazy val root =
 lazy val rootDependencies = Seq(guice, jodaTime, scalazCore, playSlick, playSlickEvolutions, postgresql, sqlite)
 
 lazy val rootTestDependencies = Seq(h2, faker, scalaTestPlusPlay, pegdown)
+
+addCommandAlias("runWithPostgreSQL", "run -Dconfig.file=conf/application.postgresql.conf")
+addCommandAlias("runWithH2", "run -Dconfig.file=conf/application.h2.conf")
+addCommandAlias("testWithCoverage", "; clean; coverage; test; coverageReport")

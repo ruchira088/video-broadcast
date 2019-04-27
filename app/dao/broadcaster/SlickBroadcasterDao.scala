@@ -102,6 +102,9 @@ class SlickBroadcasterDao @Inject()(protected val dbConfigProvider: DatabaseConf
         .result
     }
       .map { _.map(toBroadcaster).toList }
+
+  def initialize()(implicit executionContext: ExecutionContext): Future[Unit] =
+    db.run(slickBroadcasters.schema.createIfNotExists)
 }
 
 object SlickBroadcasterDao {
