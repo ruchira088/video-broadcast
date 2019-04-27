@@ -4,7 +4,7 @@ lazy val root =
   (project in file("."))
     .enablePlugins(PlayScala, BuildInfoPlugin)
     .settings(
-      name := "video-broadcast",
+      name := "video-broadcast-api",
       organization := "com.ruchij",
       version := "0.0.1",
       maintainer := "ruchira088@gmail.com",
